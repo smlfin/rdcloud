@@ -24,6 +24,7 @@ import pandas as pd
 import threading
 import time
 import re
+import subprocess
 
 # ─────────────────────────────────────────────
 #  PAGE CONFIG
@@ -198,6 +199,19 @@ def run_automation():
         st.session_state.error_msg = None
         
         status_placeholder = st.empty()
+        
+        # Install Playwright browsers if needed (for Streamlit Cloud)
+        try:
+            import subprocess
+            status_placeholder.info("🔧 Preparing Playwright browsers...")
+            subprocess.run(
+                ["python", "-m", "playwright", "install", "chromium"],
+                capture_output=True,
+                timeout=120,
+                check=False
+            )
+        except Exception as e:
+            pass  # Continue anyway, browsers might already exist
         
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
