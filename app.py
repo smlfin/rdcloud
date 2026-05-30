@@ -84,7 +84,9 @@ def generate_and_download(context, page, temp_path, export_format="Excel 97-2003
         rp = npi.value
         rp.wait_for_load_state("networkidle", timeout=60000)
         export_sel = locate_export_select(rp)
-        if not export_sel: { rp.close(); return False }
+        if not export_sel:
+            rp.close()
+            return False
         export_sel.select_option(label=export_format)
         with rp.expect_download(timeout=90000) as dl_info:
             rp.locator("a[id*='Export'], input[id*='Export'], button[id*='Export']").first.click(timeout=10000, no_wait_after=True)
